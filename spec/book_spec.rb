@@ -15,7 +15,13 @@ describe :Book do
 
   it 'finds a book based on table column and search term' do
     @new_book.save
-    @new_book.read('books', 'title', 'Grapes of Wrath')
-    expect(@new_book.id).to be_a Fixnum
+    new_book2 = @new_book.read('title', 'Grapes of Wrath')
+    expect(@new_book.title).to eq new_book2[0].title
+  end
+
+  it 'updates a book based on table column and search term' do
+    @new_book.save
+    @new_book.update('title', 'new-name')
+    expect(@new_book.title).to eq 'new-name'
   end
 end

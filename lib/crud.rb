@@ -20,21 +20,26 @@ class Crud
   end
 
   #--read--
-  def read(table, column, search_term)
+  def read(column, search_term)
     query_result = []
-    results = DB.exec("SELECT * FROM #{table} WHERE #{column} = '#{search_term}'")
+    results = DB.exec("SELECT * FROM #{self.class.to_s.downcase + 's'} WHERE #{column} = '#{search_term}'")
     results.each do |result|
-      query_result << Kernel.const_get(table.capitalize.slice(0..-2)).new(result)
+      query_result << self.class.new(result)
     end
-    binding.pry
+    query_result
   end
 
   #--update--
+  def update column, new_data
+    DB.exec("UPDATE #{self.class.to_s.downcase + 's'} SET #{column} = '#{new_data}' WHERE id = '#{@id}';")
+    self.instance_variable_set('@'+column, new_data)
+  end
 
   #--destroy--
-  def delete id
-    DB.exec("DELETE FROM #{self.class.to_s.downcase + 's'} WHERE id = '#{id}';")
+  def delete
+    DB.exec("DELETE FROM #{self.class.to_s.downcase + 's'} WHERE id = '#{@id}';")
   end
+
 
 end
 
